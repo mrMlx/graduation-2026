@@ -41,8 +41,8 @@
       align-items: center;
     }
 
-    /* Картинка на весь экран */
-    .lightbox-img {
+    /* Медиаконтент на весь экран */
+    .lightbox-content {
       max-width: 95%;
       max-height: 95%;
       object-fit: contain;
@@ -60,12 +60,18 @@
   <div class="gallery">
     <img src="images/90e.webp" class="gallery-item" alt="Воспоминание">
     <img src="images/Sanek.webp" class="gallery-item" alt="Воспоминание">
+    
+    <video src="images/video1.mp4" class="gallery-item" controls loop muted playsinline></video>
+    
     <img src="images/group.webp" class="gallery-item" alt="Воспоминание">
+    
+    <video src="images/video2.mp4" class="gallery-item" controls loop muted playsinline></video>
+    
     <img src="images/photo4.webp" class="gallery-item" alt="Воспоминание">
   </div>
 
-  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-    <img class="lightbox-img" id="lightbox-img" src="" alt="Крупный план">
+  <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+    <div id="lightbox-media-container"></div>
   </div>
 
   <div class="back-btn">
@@ -74,19 +80,46 @@
 
   <script>
     const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
+    const container = document.getElementById('lightbox-media-container');
 
-    // Находим все картинки в галерее
-    document.querySelectorAll('.gallery-item').forEach(image => {
-      image.addEventListener('click', () => {
+    // Находим все элементы галереи (и картинки, и видео)
+    document.querySelectorAll('.gallery-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        // Если кликнули на встроенные кнопки плеера прямо в сетке — не открываем большое окно
+        if (item.tagName === 'VIDEO' && e.target !== item) return;
+
+        container.innerHTML = ''; // Очищаем контейнер от старого контента
+
+        if (item.tagName === 'IMG') {
+          // Если кликнули на картинку
+          const img = document.createElement('img');
+          img.src = item.src;
+          img.className = 'lightbox-content';
+          img.alt = 'Крупный план';
+          container.appendChild(img);
+        } else if (item.tagName === 'VIDEO') {
+          // Если кликнули на видео — создаем плеер со звуком и управлением
+          const video = document.createElement('video');
+          video.src = item.src;
+          video.className = 'lightbox-content';
+          video.controls = true;
+          video.autoplay = true;
+          video.loop = true;
+          container.appendChild(video);
+        }
+
         lightbox.style.display = 'flex'; // Показываем темный экран
-        lightboxImg.src = image.src;     /* Подставляем адрес кликнутой фотки */
       });
     });
 
-    // Функция закрытия при клике в любое место экрана
-    function closeLightbox() {
-      lightbox.style.display = 'none';
+    // Функция закрытия
+    function closeLightbox(event) {
+      // Закрываем окно ТОЛЬКО если кликнули по черному фону (самому лайтбоксу), 
+      // а не по видео, картинке или кнопкам управления плеера
+      if (event.target === lightbox) {
+        lightbox.style.display = 'none';
+        container.innerHTML = ''; // Полностью удаляем медиа, чтобы звук видео прекратился
+      }
     }
   </script>
 
