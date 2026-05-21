@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Галерея воспоминаний</title>
+  <style>
+    body { background-color: #fff; margin: 0; padding: 5px; font-family: sans-serif; }
+
+    /* Сетка галереи */
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px; /* Вплотную, с минимальным зазором */
+    }
+
+    .gallery-item {
+      height: 250px;       /* Одинаковая высота рядов */
+      flex-grow: 1;        /* Растягиваются в ширину */
+      object-fit: contain; /* Не обрезаются, сохраняют формат */
+      background-color: #f4f7f6;
+      cursor: pointer;     /* Меняем курсор на палец при наведении */
+      transition: transform 0.2s ease;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.01); /* Легкий эффект при наведении */
+    }
+
+    /* Стили для полноэкранного режима (Лайтбокс) */
+    .lightbox {
+      display: none; /* По умолчанию скрыт */
+      position: fixed;
+      z-index: 1000;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9); /* Темный полупрозрачный фон */
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Картинка на весь экран */
+    .lightbox-img {
+      max-width: 95%;
+      max-height: 95%;
+      object-fit: contain;
+      border-radius: 4px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    /* Кнопка возврата на главную */
+    .back-btn { text-align: center; margin: 40px; }
+    .back-btn a { color: #1e3c72; text-decoration: none; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <div class="gallery">
+    <img src="images/90e.webp" class="gallery-item" alt="Воспоминание">
+    <img src="images/Sanek.webp" class="gallery-item" alt="Воспоминание">
+    <img src="images/photo3.webp" class="gallery-item" alt="Воспоминание">
+    <img src="images/photo4.webp" class="gallery-item" alt="Воспоминание">
+  </div>
+
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <img class="lightbox-img" id="lightbox-img" src="" alt="Крупный план">
+  </div>
+
+  <div class="back-btn">
+    <a href="index.html">← Назад на главную</a>
+  </div>
+
+  <script>
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+
+    // Находим все картинки в галерее
+    document.querySelectorAll('.gallery-item').forEach(image => {
+      image.addEventListener('click', () => {
+        lightbox.style.display = 'flex'; // Показываем темный экран
+        lightboxImg.src = image.src;     /* Подставляем адрес кликнутой фотки */
+      });
+    });
+
+    // Функция закрытия при клике в любое место экрана
+    function closeLightbox() {
+      lightbox.style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>
